@@ -25,8 +25,7 @@ ball_startposition_x = (fenster_breite / 2)
 ball_startposition_y = (fenster_hoehe / 2)
 ball = [ball_startposition_x, ball_startposition_y]
 
-ball_geschwindigkeit = 10
-ball_richtung = [-(ball_geschwindigkeit / 2), -ball_geschwindigkeit]
+ball_richtung = [-5, -10]
 
 # Einstellungen und Startposition Paddel
 paddel_breite = 100
@@ -52,14 +51,14 @@ def aktualisiere_ball_position():
     kollisionsbox = [ball[0] - (ball_radius / 2), ball[1] - (ball_radius / 2), 2 * ball_radius, 2 * ball_radius]
     kollision_mit_paddel = pygame.rect.Rect(paddel).colliderect(kollisionsbox)
     
+    # Passe Richtung an, falls eine Kollision entedeckt wurde
     if kollision_links or kollision_rechts:
         ball_richtung[0] = ball_richtung[0] * -1  
     elif kollision_oben or kollision_unten or kollision_mit_paddel:
         ball_richtung[1] = ball_richtung[1] * -1
     
-    ball_x_neu = ball[0] + ball_richtung[0]
-    ball_y_neu = ball[1] + ball_richtung[1]
-    ball = [ball_x_neu, ball_y_neu]
+    # Berechne neue Position des Balls gemäss der Richtung
+    ball = [ball[0] + ball_richtung[0], ball[1] + ball_richtung[1]]
     
 
 while True:
