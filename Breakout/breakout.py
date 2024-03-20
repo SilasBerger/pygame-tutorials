@@ -9,6 +9,7 @@ fenster_hoehe = 300
 
 # Einstellungen für die Farben
 schwarz = pygame.color.Color(0, 0, 0)
+rot = pygame.color.Color(255, 0, 0)
 farbe_ball = pygame.color.Color(255, 255, 255)
 farbe_paddel = pygame.color.Color(255, 255, 255)
 
@@ -30,9 +31,9 @@ ball_richtung = [-0.5, -1]
 # Einstellungen und Startposition Paddel
 paddel_breite = 100
 paddel_hoehe = 10
-paddel_startposition_x = (fenster_breite / 2) - (paddel_breite / 2)
-paddel_startposition_y = (fenster_hoehe * 0.9) - (paddel_hoehe / 2)
-paddel = [paddel_startposition_x, paddel_startposition_y, paddel_breite, paddel_hoehe]
+paddel_start_x = (fenster_breite / 2) - (paddel_breite / 2)
+paddel_y = (fenster_hoehe * 0.9) - (paddel_hoehe / 2)
+paddel = [paddel_start_x, paddel_y, paddel_breite, paddel_hoehe]
 
 # Sonstige Einstellungen
 paddel_bewegung_distanz = 20
@@ -66,20 +67,31 @@ def aktualisiere_ball_position():
     ball = [ball[0] + ball_richtung[0], ball[1] + ball_richtung[1]]
 
 
-while True:
+spiel_aktiv = True
+hintergrundfarbe = schwarz
+
+while spiel_aktiv:
     clock.tick(100)
-    screen.fill(schwarz)
+    screen.fill(hintergrundfarbe)
 
     pygame.draw.circle(screen, farbe_ball, ball, ball_radius)
     aktualisiere_ball_position()
 
     pygame.draw.rect(screen, farbe_paddel, paddel)
 
+    if ball[1] > paddel_y:
+        hintergrundfarbe = rot
+        ball_richtung = [0, 0]
+        paddel_bewegung_distanz = 0
+
     pygame.display.flip()
 
     for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            spiel_aktiv = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 paddel[0] = paddel[0] - paddel_bewegung_distanz
             if event.key == pygame.K_RIGHT:
                 paddel[0] = paddel[0] + paddel_bewegung_distanz
+
