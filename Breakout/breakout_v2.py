@@ -6,6 +6,7 @@ pygame.init()
 # Farben definieren
 black = pygame.color.Color('black')
 red = pygame.color.Color('red')
+green = pygame.color.Color('green')
 
 # Farben zuweisen
 background_color = black
@@ -163,9 +164,12 @@ while run:
 
     ball_hits_block = pygame.sprite.spritecollide(ball, blocks, True)
     if ball_hits_block:
-        print(ball_hits_block)
         ball.flip_y_direction()
 
+    if len(blocks) == 0:
+        background_color = green
+        paddle_speed = 0
+        ball.stop()
 
     # Die Änderungen im Spielfenster sichtbar machen.
     pygame.display.flip()
