@@ -80,12 +80,14 @@ class Paddle(pygame.sprite.Sprite):
         self.rect.center = (x, y)
 
     def left(self):
-        new_x = self.rect.center[0] - paddle_speed
+        distance_to_left = self.rect.left
+        new_x = self.rect.center[0] - min(distance_to_left, paddle_speed)
         new_y = self.rect.center[1]
         self.rect.center = (new_x, new_y)
 
     def right(self):
-        new_x = self.rect.center[0] + paddle_speed
+        distance_to_right = window_width - self.rect.right
+        new_x = self.rect.center[0] + min(distance_to_right, paddle_speed)
         new_y = self.rect.center[1]
         self.rect.center = (new_x, new_y)
 
