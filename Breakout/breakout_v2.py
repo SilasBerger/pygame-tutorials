@@ -82,12 +82,54 @@ class Paddle(pygame.sprite.Sprite):
         self.rect.center = (new_x, new_y)
 
 
+class Block(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('sprites/01-Breakout-Tiles.png')
+        self.image = pygame.transform.scale(self.image, (150, 40))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+
+
 ball = Ball(500, 300)
 balls = pygame.sprite.Group()
 balls.add(ball)
 
 paddle = Paddle(window_width / 2, paddle_y)
 paddles = pygame.sprite.Group(paddle)
+
+blocks = pygame.sprite.Group()
+blocks.add([
+    Block(100, 50),
+    Block(250, 50),
+    Block(400, 50),
+    Block(550, 50),
+    Block(700, 50),
+
+    Block(100, 90),
+    Block(250, 90),
+    Block(400, 90),
+    Block(550, 90),
+    Block(700, 90),
+
+    Block(100, 130),
+    Block(250, 130),
+    Block(400, 130),
+    Block(550, 130),
+    Block(700, 130),
+
+    Block(100, 170),
+    Block(250, 170),
+    Block(400, 170),
+    Block(550, 170),
+    Block(700, 170),
+
+    Block(100, 210),
+    Block(250, 210),
+    Block(400, 210),
+    Block(550, 210),
+    Block(700, 210),
+])
 
 run = True
 while run:
@@ -100,6 +142,9 @@ while run:
 
     paddles.update()
     paddles.draw(screen)
+
+    blocks.update()
+    blocks.draw(screen)
 
     if ball.hits_top_of_window():
         ball.flip_y_direction()
@@ -115,6 +160,12 @@ while run:
     ball_hits_paddle = pygame.sprite.spritecollide(ball, paddles, False)
     if ball_hits_paddle:
         ball.flip_y_direction()
+
+    ball_hits_block = pygame.sprite.spritecollide(ball, blocks, True)
+    if ball_hits_block:
+        print(ball_hits_block)
+        ball.flip_y_direction()
+
 
     # Die Änderungen im Spielfenster sichtbar machen.
     pygame.display.flip()
