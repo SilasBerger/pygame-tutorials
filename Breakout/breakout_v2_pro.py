@@ -20,6 +20,7 @@ window_height = 600
 block_hit_sound = pygame.mixer.Sound('sounds/block_hit.wav')
 paddle_hit_sound = pygame.mixer.Sound('sounds/paddle_hit.wav')
 win_game_sound = pygame.mixer.Sound('sounds/win_game.wav')
+lose_life_sound = pygame.mixer.Sound('sounds/lose_life.wav')
 lose_game_sound = pygame.mixer.Sound('sounds/lose_game.mp3')
 
 # Sonstige einstellungen
@@ -40,7 +41,13 @@ class Ball(pygame.sprite.Sprite):
         self.image = pygame.image.load('sprites/58-Breakout-Tiles.png')
         self.image = pygame.transform.scale(self.image, (50, 50))
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        self.starting_x = x
+        self.starting_y = y
+        self.direction = (-1, -2)
+        self.reset()
+
+    def reset(self):
+        self.rect.center = (self.starting_x, self.starting_y)
         self.direction = (-1, -2)
 
     def hits_side_of_window(self):
@@ -101,6 +108,15 @@ class Block(pygame.sprite.Sprite):
         self.rect.center = (x, y)
 
 
+class Heart(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('sprites/60-Breakout-Tiles.png')
+        self.image = pygame.transform.scale(self.image, (30, 30))
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+
+
 ball = Ball(500, 300)
 balls = pygame.sprite.Group()
 balls.add(ball)
@@ -141,10 +157,19 @@ blocks.add([
     Block(700, 210),
 ])
 
+hearts_list = [
+    Heart(window_width - 20, window_height - 20),
+    Heart(window_width - 60, window_height - 20),
+    Heart(window_width - 100, window_height - 20)
+]
+hearts = pygame.sprite.Group()
+hearts.add(hearts_list)
+
 pygame.mixer.music.load('sounds/soundtrack.mp3')
 pygame.mixer.music.play(-1)
 
 game_active = True
+
 
 def end_game():
     global game_active
@@ -162,11 +187,19 @@ def win():
     background_color = green
     win_game_sound.play()
 
+
 def lose():
     global background_color
     end_game()
     background_color = red
     lose_game_sound.play()
+
+
+def lose_life():
+    hearts_list[len(hearts) - 1].kill()
+    if len(hearts) > 0:
+        lose_life_sound.play()
+        ball.reset()
 
 
 run = True
@@ -184,6 +217,9 @@ while run:
     blocks.update()
     blocks.draw(screen)
 
+    hearts.update()
+    hearts.draw(screen)
+
     if ball.hits_top_of_window():
         ball.flip_y_direction()
 
@@ -191,7 +227,7 @@ while run:
         ball.flip_x_direction()
 
     if ball.is_below_paddle() and game_active:
-        lose()
+        lose_life()
 
     ball_hits_paddle = pygame.sprite.spritecollide(ball, paddles, False)
     if ball_hits_paddle:
@@ -205,6 +241,9 @@ while run:
 
     if len(blocks) == 0 and game_active:
         win()
+
+    if len(hearts) == 0 and game_active:
+        lose()
 
     # Die Änderungen im Spielfenster sichtbar machen.
     pygame.display.flip()
