@@ -77,6 +77,25 @@ class Ball(pygame.sprite.Sprite):
         new_y_direction = self.direction[1] * -1
         self.direction = (new_x_direction, new_y_direction)
 
+    def change_direction_after_paddle_hit(self, paddle):
+        paddle_left = paddle.rect.left
+        paddle_right = paddle.rect.right
+        paddle_center = paddle.rect.center[0]
+        paddle_width = paddle.rect.width
+        ball_center = self.rect.center[0]
+        ball_distance_to_paddle_left = ball_center - paddle_left
+        ball_distance_to_paddle_right = paddle_right - ball_center
+        width_of_outer_edge = paddle_width * 0.1
+
+        if ball_distance_to_paddle_left < width_of_outer_edge:
+            self.direction = (-2, -1)
+        elif ball_distance_to_paddle_right < width_of_outer_edge:
+            self.direction = (2, -1)
+        elif ball_center < paddle_center:
+            self.direction = (-1, -2)
+        else:
+            self.direction = (1, -2)
+
 
 class Paddle(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -232,7 +251,7 @@ while run:
     ball_hits_paddle = pygame.sprite.spritecollide(ball, paddles, False)
     if ball_hits_paddle:
         paddle_hit_sound.play()
-        ball.flip_y_direction()
+        ball.change_direction_after_paddle_hit(paddle)
 
     ball_hits_block = pygame.sprite.spritecollide(ball, blocks, True)
     if ball_hits_block:
