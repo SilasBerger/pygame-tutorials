@@ -1,4 +1,9 @@
 # Breakout
+## TODO vor Tutorial
+- Generelles Refactoring
+  - Responsibilities in Klasse, insbesondere Collisions
+  - Ordering
+- Taste gedrückt halten für Paddle
 
 ## Credits
 - [Sprites](https://opengameart.org/content/breakout-brick-breaker-tile-set-free)

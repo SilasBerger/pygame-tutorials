@@ -3,28 +3,28 @@ import pygame
 # Spiel initialisieren
 pygame.init()
 
+# Einstellungen für das Fenster
+window_width = 800
+window_height = 600
+
 # Farben definieren
 black = pygame.color.Color('black')
 red = pygame.color.Color('red')
 green = pygame.color.Color('green')
 
-# Farben zuweisen
-background_color = black
-
-# Einstellungen für das Fenster
-window_width = 800
-window_height = 600
-
-# Sonstige einstellungen
+# Einstellungen für das Paddle
 paddle_speed = 20
-paddle_y = window_height * 0.9
+paddle_y = 540
+
+# Zugriff auf die Uhr -> damit können wir die Geschwindigkeit des Spiels anpassen
+clock = pygame.time.Clock()
+
+# Standard-Hintergrundfarbe festlegen
+background_color = black
 
 # Pygame-Fenster vorbereiten
 pygame.display.set_caption("Breakout 👾")
 screen = pygame.display.set_mode([window_width, window_height])
-
-# Zugriff auf die Uhr -> damit können wir die Geschwindigkeit des Spiels anpassen
-clock = pygame.time.Clock()
 
 
 class Ball(pygame.sprite.Sprite):
