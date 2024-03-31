@@ -13,7 +13,7 @@ red = pygame.color.Color('red')
 green = pygame.color.Color('green')
 
 # Einstellungen für das Paddle
-paddle_speed = 20
+paddle_speed = 3
 paddle_y = 540
 
 # Zugriff auf die Uhr -> damit können wir die Geschwindigkeit des Spiels anpassen
@@ -176,8 +176,9 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                paddle.left()
-            if event.key == pygame.K_RIGHT:
-                paddle.right()
+
+    keys_pressed = pygame.key.get_pressed()
+    if keys_pressed[pygame.K_LEFT]:
+        paddle.left()
+    if keys_pressed[pygame.K_RIGHT]:
+        paddle.right()
