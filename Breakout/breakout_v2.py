@@ -26,7 +26,6 @@ background_color = black
 pygame.display.set_caption("Breakout 👾")
 screen = pygame.display.set_mode([window_width, window_height])
 
-
 class Ball(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -35,18 +34,6 @@ class Ball(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
         self.direction = (-1, -2)
-
-    def hits_side_of_window(self):
-        return self.rect.left <= 0 or self.rect.right >= window_width
-
-    def hits_top_of_window(self):
-        return self.rect.top <= 0
-
-    def is_below_paddle(self):
-        return self.rect.center[1] > paddle_y
-
-    def stop(self):
-        self.direction = (0, 0)
 
     def move(self):
         new_x = self.rect.center[0] + self.direction[0]
@@ -63,6 +50,23 @@ class Ball(pygame.sprite.Sprite):
         new_y_direction = self.direction[1] * -1
         self.direction = (new_x_direction, new_y_direction)
 
+    def hits_side_of_window(self):
+        return self.rect.left <= 0 or self.rect.right >= window_width
+
+    def hits_top_of_window(self):
+        return self.rect.top <= 0
+
+    def is_below_paddle(self):
+        return self.rect.center[1] > paddle_y
+
+    def hits_paddle(self):
+        return pygame.sprite.spritecollide(self, paddles, False)
+
+    def hits_block(self):
+        return pygame.sprite.spritecollide(self, blocks, True)
+
+    def stop(self):
+        self.direction = (0, 0)
 
 class Paddle(pygame.sprite.Sprite):
     def __init__(self, x, y):
@@ -82,7 +86,6 @@ class Paddle(pygame.sprite.Sprite):
         new_y = self.rect.center[1]
         self.rect.center = (new_x, new_y)
 
-
 class Block(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -90,7 +93,6 @@ class Block(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (150, 40))
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
-
 
 ball = Ball(500, 300)
 balls = pygame.sprite.Group()
@@ -153,25 +155,22 @@ while run:
     if ball.hits_side_of_window():
         ball.flip_x_direction()
 
+    if ball.hits_paddle():
+        ball.flip_y_direction()
+
+    if ball.hits_block():
+        ball.flip_y_direction()
+
     if ball.is_below_paddle():
         background_color = red
         paddle_speed = 0
         ball.stop()
-
-    ball_hits_paddle = pygame.sprite.spritecollide(ball, paddles, False)
-    if ball_hits_paddle:
-        ball.flip_y_direction()
-
-    ball_hits_block = pygame.sprite.spritecollide(ball, blocks, True)
-    if ball_hits_block:
-        ball.flip_y_direction()
 
     if len(blocks) == 0:
         background_color = green
         paddle_speed = 0
         ball.stop()
 
-    # Die Änderungen im Spielfenster sichtbar machen.
     pygame.display.flip()
 
     for event in pygame.event.get():
@@ -182,4 +181,3 @@ while run:
                 paddle.left()
             if event.key == pygame.K_RIGHT:
                 paddle.right()
-
